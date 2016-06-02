@@ -2,16 +2,16 @@
 
 namespace CQRS.Main
 {
-    public class RRDispatcher : IHandleOrder, IStats
+	public class RRDispatcher : IHandle<AMessage>, IStats
     {
-        private readonly Queue<IHandleOrder> _queue;
+		private readonly Queue<IHandle<AMessage>> _queue;
 
-        public RRDispatcher(IEnumerable<IHandleOrder> handlers)
+		public RRDispatcher(IEnumerable<IHandle<AMessage>> handlers)
         {
-            _queue = new Queue<IHandleOrder>(handlers);
+			_queue = new Queue<IHandle<AMessage>>(handlers);
         }
 
-        public void Handle(Order order)
+		public void Handle(AMessage order)
         {
             var handler = _queue.Dequeue();
             handler.Handle(order);

@@ -1,19 +1,25 @@
-﻿namespace CQRS.Main
-{
-    public class Cashier : IHandleOrder
-    {
-        private readonly IHandleOrder _handler;
+﻿using System;
 
-        public Cashier(IHandleOrder handler)
+namespace CQRS.Main
+{
+	public class Cashier : IHandle<OrderPriced>
+    {
+        
+
+		IPublisher _publisher;
+
+		public Cashier(IPublisher publisher)
         {
-            _handler = handler;
+			_publisher = publisher;
+            
         }
 
-        public void Handle(Order order)
+		public void Handle(OrderPriced message)
         {
+			var order = message.Order;
             order.Paid = true;
 
-            _handler.Handle(order);
+			_publisher.Publish (new OrderPaid(Guid.NewGuid(), order));
         }
     }
 }

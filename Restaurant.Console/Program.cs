@@ -13,7 +13,7 @@ namespace Restaurant.Console
         private static QueueHandler _concurrentQueue;
         private static QueueHandler _concurrentQueue2;
         private static QueueHandler _concurrentQueue3;
-        private static QueueHandler _waiterQueue;
+        private static QueueHandler kitchenQueue;
 
         static void Main(string[] args)
         {
@@ -25,27 +25,45 @@ namespace Restaurant.Console
             
             _theTimer.Elapsed += _theTimer_Elapsed;
 
-            var printer = new Printer();
-            var cashier = new Cashier(printer);
-            _cashierQueue = new QueueHandler(cashier, "Cashier");
-            var assistant = new AssistantManager(_cashierQueue);
-            _assistantQueue = new QueueHandler(assistant, "Assistant");
-            var cook = new Cook(_assistantQueue) {Name = "John"};
-            var cook2 = new Cook(_assistantQueue) { Name = "Jio" };
-            var cook3 = new Cook(_assistantQueue) { Name = "Jack" };
+			var bus = new TopicBasedPubSub ();
+
+			var printer = new Printer();
+			bus.Subscribe (printer);
+
+			var cashier = new Cashier(bus);
+			bus.Subscribe (cashier);
+			_cashierQueue = new QueueHandler(cashier, "Cashier");
+
+
+			var assistant = new AssistantManager(bus);		
+			_assistantQueue = new QueueHandler(assistant);
+			bus.Subscribe (assistant);
+
+			var cook = new Cook(bus) {Name = "John"};
+			var cook2 = new Cook(bus) { Name = "Jio" };
+			var cook3 = new Cook(bus) { Name = "Jack" };
+
             //var multiplexer = new Multiplexer(new []{cook, cook, cook});
-            _concurrentQueue = new QueueHandler(cook, cook.Name);
-            _concurrentQueue2 = new QueueHandler(cook2, cook2.Name);
-            _concurrentQueue3 = new QueueHandler(cook3, cook3.Name);
+			_concurrentQueue = new QueueHandler(cook, cook.Name);
+			_concurrentQueue2 = new QueueHandler(cook2, cook2.Name);
+			_concurrentQueue3 = new QueueHandler(cook3, cook3.Name);
+
+
+
             //var dispatcher = new RRDispatcher(new[] { concurrentQueue, concurrentQueue2, concurrentQueue3 });
             var mfDispatcher = new MFDispatcher(new[] { _concurrentQueue, _concurrentQueue2, _concurrentQueue3 });
-            _waiterQueue = new QueueHandler(mfDispatcher, "Waiter");
-            var waiter = new Waiter(_waiterQueue);
+
+
+
+			kitchenQueue = new QueueHandler(mfDispatcher, "Waiter");
+			bus.Subscribe (OrderPlaced, kitchenQueue);
+
+			var waiter = new Waiter(bus);
             _concurrentQueue.Start();
             _concurrentQueue2.Start();
             _concurrentQueue3.Start();
             _assistantQueue.Start();
-            _waiterQueue.Start();
+            kitchenQueue.Start();
             _cashierQueue.Start();
 
             _theTimer.Start();
@@ -67,7 +85,7 @@ namespace Restaurant.Console
         private static void _theTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
 			System.Console.WriteLine ("========================================");
-            System.Console.WriteLine(_waiterQueue.GetStats());
+            System.Console.WriteLine(kitchenQueue.GetStats());
             System.Console.WriteLine(_concurrentQueue.GetStats());
             System.Console.WriteLine(_concurrentQueue2.GetStats());
             System.Console.WriteLine(_concurrentQueue3.GetStats());

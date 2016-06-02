@@ -5,11 +5,11 @@ namespace CQRS.Main
 {
     public class Waiter
     {
-        private readonly IHandleOrder _handler;
+		private readonly IPublisher _bus;
 
-        public Waiter(IHandleOrder handler)
+		public Waiter(IPublisher bus)
         {
-            _handler = handler;
+			_bus = bus;
         }
 
         public int PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
@@ -19,7 +19,7 @@ namespace CQRS.Main
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);
             }
-            _handler.Handle(order);
+			_bus.Publish(new OrderPlaced(Guid.NewGuid(), order));
 
             return order.Id;
         }

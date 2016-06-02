@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-    public class MFDispatcher : IHandleOrder
+	public class MFDispatcher : IHandle<AMessage>
     {
         private readonly IEnumerable<QueueHandler> _queues;
 
@@ -12,7 +12,7 @@ namespace CQRS.Main
             _queues = queues;
         }
 
-        public void Handle(Order order)
+		public void Handle(AMessage order)
         {
             while (true)
             {

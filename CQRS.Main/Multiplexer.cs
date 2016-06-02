@@ -2,16 +2,16 @@
 
 namespace CQRS.Main
 {
-    public class Multiplexer : IHandleOrder
+	public class Multiplexer : IHandle<AMessage>
     {
-        private readonly IEnumerable<IHandleOrder> _handlers;
+		private readonly IEnumerable<IHandle<AMessage>> _handlers;
 
-        public Multiplexer(IEnumerable<IHandleOrder> handlers)
+		public Multiplexer(IEnumerable<IHandle<AMessage>> handlers)
         {
             _handlers = handlers;
         }
 
-        public void Handle(Order order)
+		public void Handle(AMessage order)
         {
             foreach (var handler in _handlers)
             {

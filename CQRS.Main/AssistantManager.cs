@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System;
 
 namespace CQRS.Main
 {
-    public class AssistantManager : IHandleOrder
+	public class AssistantManager : IHandle<FoodCooked>
     {
-        private readonly IHandleOrder _handler;
+        
+		private IPublisher _bus;
 
         private readonly Dictionary<string, decimal> _priceList = new Dictionary<string, decimal>
         {
@@ -15,13 +17,14 @@ namespace CQRS.Main
             {"pasta", 5.5m}
         };
 
-        public AssistantManager(IHandleOrder handler)
+		public AssistantManager(IPublisher bus)
         {
-            _handler = handler;
+			_bus = bus;
         }
 
-        public void Handle(Order order)
+		public void Handle(FoodCooked message)
         {
+			var order = message.Order;
             foreach (var lineItem in order.LineItems)
             {
                 lineItem.Price = _priceList[lineItem.Item];
@@ -34,7 +37,7 @@ namespace CQRS.Main
             order.Tax = tax;
             order.Total = total;
 
-            _handler.Handle(order);
+			_bus.Publish (new OrderPriced(Guid.NewGuid(), order));
         }
     }
 }

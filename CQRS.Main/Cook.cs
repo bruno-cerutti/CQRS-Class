@@ -4,9 +4,8 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-    public class Cook : IHandleOrder
-    {
-        private readonly IHandleOrder _handler;
+	public class Cook : IHandle<OrderPlaced>
+    {       
 
         private readonly Dictionary<string, string> _cookBook = new Dictionary<string, string>
         {
@@ -15,13 +14,17 @@ namespace CQRS.Main
             {"pasta", "flour, ragu"}
         };
 
-        public Cook(IHandleOrder handler)
+		private IPublisher _publisher;
+
+		public Cook(IPublisher publisher)
         {
-            _handler = handler;
+			_publisher = publisher;
+            
         }
 
-        public void Handle(Order order)
+		public void Handle(OrderPlaced orderPlaced)
         {
+			var order = orderPlaced.Order;
             order.CookName = Name;
             order.Ingredients = string.Empty;
             foreach (var lineItem in order.LineItems)
@@ -31,7 +34,7 @@ namespace CQRS.Main
 
             Thread.Sleep(new Random().Next(0,1000));
 
-            _handler.Handle(order);
+			_publisher.Publish (new FoodCooked(Guid.NewGuid(), order));
         }
 
         public string Name { get; set; }

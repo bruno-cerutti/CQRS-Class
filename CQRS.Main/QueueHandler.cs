@@ -3,22 +3,23 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-    public class QueueHandler : IHandleOrder, IStartable, IStats
+    public class QueueHandler : IHandle<AMessage>, IStartable, IStats
     {
-        private readonly IHandleOrder _handler;
-        private readonly string _queueName;
-        private readonly ConcurrentQueue<Order> _queue;
+		private readonly string _queueName;
+		private readonly ConcurrentQueue<AMessage> _queue;
         private readonly Thread _theThread;
 
-        public QueueHandler(IHandleOrder handler, string queueName)
+		IHandle<AMessage> _handler;
+
+		public QueueHandler(IHandle<AMessage> handler, string queueName)
         {
-            _handler = handler;
-            _queueName = queueName;
-            _queue = new ConcurrentQueue<Order>();
+			_handler = handler;
+			_queueName = queueName;
+			_queue = new ConcurrentQueue<AMessage>();
             _theThread = new Thread(ProcessOrder);
         }
 
-        public void Handle(Order order)
+		public void Handle(AMessage order)
         {
             _queue.Enqueue(order);
         }
@@ -29,14 +30,14 @@ namespace CQRS.Main
             while (true)
             {
 
-                Order order;
+				AMessage order;
                 if (!_queue.TryDequeue(out order))
                 {
                     Thread.Sleep(1);
                 }
                 else
                 {
-                    _handler.Handle(order);
+					_handler.Handle (order);
                 }
 
             }
