@@ -66,12 +66,14 @@ namespace Restaurant.Console
 
         private static void _theTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+			System.Console.WriteLine ("========================================");
             System.Console.WriteLine(_waiterQueue.GetStats());
             System.Console.WriteLine(_concurrentQueue.GetStats());
             System.Console.WriteLine(_concurrentQueue2.GetStats());
             System.Console.WriteLine(_concurrentQueue3.GetStats());
             System.Console.WriteLine(_assistantQueue.GetStats());
             System.Console.WriteLine(_cashierQueue.GetStats());
+			System.Console.WriteLine ("========================================");
         }
     }
 }
