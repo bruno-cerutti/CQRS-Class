@@ -79,6 +79,12 @@ namespace CQRS.Main
             array.Add(JObject.FromObject(lineItem));
             _jsonOrder["lineItems"] = array;
         }
+
+        public string CookName
+        {
+            get { return _jsonOrder["cookName"].Value<string>(); }
+            set { _jsonOrder["cookName"] = value; }
+        }
     }
 
 }
