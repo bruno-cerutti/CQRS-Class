@@ -3,16 +3,16 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-	public class MFDispatcher : IHandle<AMessage>
+	public class MFDispatcher<TMessage> : IHandle<TMessage>
     {
-        private readonly IEnumerable<QueueHandler> _queues;
+        private readonly IEnumerable<QueueHandler<TMessage>> _queues;
 
-        public MFDispatcher(IEnumerable<QueueHandler> queues)
+        public MFDispatcher(IEnumerable<QueueHandler<TMessage>> queues)
         {
             _queues = queues;
         }
 
-		public void Handle(AMessage order)
+		public void Handle(TMessage message)
         {
             while (true)
             {
@@ -20,7 +20,7 @@ namespace CQRS.Main
                 {
                     if (queue.QueueSize < 5)
                     {
-                        queue.Handle(order);
+                        queue.Handle(message);
                         return;
                     }
                 }

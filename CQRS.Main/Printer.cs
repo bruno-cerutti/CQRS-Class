@@ -2,13 +2,13 @@
 
 namespace CQRS.Main
 {
-	public class Printer : IHandle<AMessage>
+	public class Printer : IHandle<OrderPaid>
     {
 
-		public void Handle(AMessage order)
+		public void Handle(OrderPaid message)
         {
             Console.WriteLine(DateTime.Now);
-            Console.WriteLine(order);
+            Console.WriteLine(message.Order);
 
 
         }

@@ -1,6 +1,6 @@
 namespace CQRS.Main
 {
-	public interface IHandle<in TMessage>
+	public interface IHandle<TMessage>
     {
 		void Handle(TMessage message);
     }

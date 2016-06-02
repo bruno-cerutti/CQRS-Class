@@ -1,35 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace CQRS.Main
 {
 	public class TopicBasedPubSub : IPublisher
 	{
-		private readonly Dictionary<string, Action<object>> _subscriptions;
+		private readonly Dictionary<string, dynamic> _subscriptions;
+	    private static object _lock = new object();
 
 		public TopicBasedPubSub ()
 		{
-			_subscriptions = new Dictionary<string, Action<object>> ();
+			_subscriptions = new Dictionary<string, dynamic> ();
 		}
 
 		#region IBUS implementation
 
-		public void Subscribe<T> (IHandle<T> handler)
+		public void SubscribeByType<T> (IHandle<T> handler) where T : AMessage
 		{
-			_subscriptions [typeof(AMessage).Name] = FireHandler;
+			_subscriptions [typeof(T).Name] = handler;
 		}
 
-		public void Publish<AMessage> (AMessage message)
-		{
-			_subscriptions [typeof(AMessage).Name](message);
-		}
+	    public void Publish<TMessage>(TMessage message) where TMessage : AMessage
+	    {
+	        var handler = _subscriptions[typeof(TMessage).Name];
+            handler.Handle(message);
+        }
 
-		private void FireHandler(object o){
-			
-		
-		}
-
+	    public void UnsubscribeByType<TMessage>(TMessage message)
+	    {
+	        lock (_lock)
+	        {
+                _subscriptions.Remove(typeof(TMessage).Name);
+            }
+        }
 
 		#endregion
 

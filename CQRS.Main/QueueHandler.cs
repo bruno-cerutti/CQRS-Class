@@ -3,41 +3,40 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-    public class QueueHandler : IHandle<AMessage>, IStartable, IStats
+    public class QueueHandler<TMessage> : IHandle<TMessage>, IStartable, IStats
     {
 		private readonly string _queueName;
-		private readonly ConcurrentQueue<AMessage> _queue;
+		private readonly ConcurrentQueue<TMessage> _queue;
         private readonly Thread _theThread;
 
-		IHandle<AMessage> _handler;
+        private readonly IHandle<TMessage> _handler;
 
-		public QueueHandler(IHandle<AMessage> handler, string queueName)
+		public QueueHandler(IHandle<TMessage> handler, string queueName)
         {
 			_handler = handler;
 			_queueName = queueName;
-			_queue = new ConcurrentQueue<AMessage>();
+			_queue = new ConcurrentQueue<TMessage>();
             _theThread = new Thread(ProcessOrder);
         }
 
-		public void Handle(AMessage order)
+        public void Handle(TMessage message)
         {
-            _queue.Enqueue(order);
+            _queue.Enqueue(message);
         }
-
 
         private void ProcessOrder()
         {
             while (true)
             {
 
-				AMessage order;
-                if (!_queue.TryDequeue(out order))
+                TMessage message;
+                if (!_queue.TryDequeue(out message))
                 {
                     Thread.Sleep(1);
                 }
                 else
                 {
-					_handler.Handle (order);
+					_handler.Handle (message);
                 }
 
             }
@@ -55,5 +54,6 @@ namespace CQRS.Main
         {
             return $"{_queueName} queue size: {_queue.Count}";
         }
+
     }
 }
