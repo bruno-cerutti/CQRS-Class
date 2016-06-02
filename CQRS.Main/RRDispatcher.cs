@@ -2,7 +2,7 @@
 
 namespace CQRS.Main
 {
-    public class RRDispatcher : IHandleOrder
+    public class RRDispatcher : IHandleOrder, IStats
     {
         private readonly Queue<IHandleOrder> _queue;
 
@@ -16,6 +16,11 @@ namespace CQRS.Main
             var handler = _queue.Dequeue();
             handler.Handle(order);
             _queue.Enqueue(handler);
+        }
+
+        public string GetStats()
+        {
+            return $"Dispatcher queue size: {_queue.Count}";
         }
     }
 }

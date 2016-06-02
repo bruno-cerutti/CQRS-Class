@@ -6,8 +6,10 @@ namespace CQRS.Main
     {
         public void Handle(Order order)
         {
-            Console.WriteLine(DateTime.Now);
-            Console.WriteLine(order);
+            //Console.WriteLine(DateTime.Now);
+            //Console.WriteLine(order);
+
+
         }
     }
 }

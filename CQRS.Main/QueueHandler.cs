@@ -3,15 +3,17 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-    public class QueueHandler : IHandleOrder, IStartable
+    public class QueueHandler : IHandleOrder, IStartable, IStats
     {
         private readonly IHandleOrder _handler;
+        private readonly string _queueName;
         private readonly ConcurrentQueue<Order> _queue;
         private readonly Thread _theThread;
 
-        public QueueHandler(IHandleOrder handler)
+        public QueueHandler(IHandleOrder handler, string queueName)
         {
             _handler = handler;
+            _queueName = queueName;
             _queue = new ConcurrentQueue<Order>();
             _theThread = new Thread(ProcessOrder);
         }
@@ -40,9 +42,17 @@ namespace CQRS.Main
             }
         }
 
+        public int QueueSize => _queue.Count;
+
         public void Start()
         {
             _theThread.Start();
+        }
+
+
+        public string GetStats()
+        {
+            return $"{_queueName} queue size: {_queue.Count}";
         }
     }
 }
