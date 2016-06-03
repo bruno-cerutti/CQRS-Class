@@ -27,6 +27,7 @@ namespace CQRS.Main
                 handlers = new List<dynamic>();
 
             handlers.Add(handler);
+            _subscriptions[typeof(T).Name] = handlers;
 		}
 
 	    public void SubscribeByCorrelationId<TMessage>(string correlationId, IHandle<TMessage> handler) where TMessage : AMessage
@@ -36,10 +37,11 @@ namespace CQRS.Main
                 handlers = new List<dynamic>();
 
             handlers.Add(handler);
+            _subscriptionsCorrelationId[typeof(TMessage).Name] = handlers;
         }
 
 
-	    public void PublishByType<TMessage>(TMessage message) where TMessage : AMessage
+        public void PublishByType<TMessage>(TMessage message) where TMessage : AMessage
 	    {
 	        IList<dynamic> handlers;
 	        if (_subscriptions.TryGetValue(typeof(TMessage).Name, out handlers))
