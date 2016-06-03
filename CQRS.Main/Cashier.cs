@@ -4,8 +4,6 @@ namespace CQRS.Main
 {
 	public class Cashier : IHandle<OrderPriced>
     {
-        
-
 		IPublisher _publisher;
 
 		public Cashier(IPublisher publisher)

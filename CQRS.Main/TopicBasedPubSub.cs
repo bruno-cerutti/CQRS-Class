@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace CQRS.Main
@@ -14,6 +14,7 @@ namespace CQRS.Main
 		}
 
 		#region IBUS implementation
+
 
 		public void SubscribeByType<T> (IHandle<T> handler) where T : AMessage
 		{
