@@ -2,7 +2,7 @@
 
 namespace CQRS.Main
 {
-	public class Midget : IHandle<OrderPlaced>, IHandle<FoodCooked>, IHandle<OrderPriced>, IHandle<OrderPaid>
+	public class Midget : IHandle<OrderPlaced>, IHandle<FoodCooked>, IHandle<OrderPriced>, IHandle<OrderPaid>, IHandle<Message>
 	{
 		#region IHandle implementation
 
@@ -28,7 +28,7 @@ namespace CQRS.Main
 
 		public void Handle (OrderPriced message)
 		{
-
+			Console.WriteLine("Order priced!");
 			_bus.PublishByType(new TakePayment(Guid.NewGuid().ToString(),
 				message.CorrelationId,
 				message.Id,
@@ -37,7 +37,11 @@ namespace CQRS.Main
 
 		public void Handle (OrderPaid message)
 		{
+			Console.WriteLine ("Process terminated!");
 			ProcessTerminated(this, message.CorrelationId);
+		}
+
+		public void Handle(Message message){
 		}
 
 		#endregion

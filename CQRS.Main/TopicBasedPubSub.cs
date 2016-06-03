@@ -37,7 +37,7 @@ namespace CQRS.Main
                 handlers = new List<dynamic>();
 
             handlers.Add(handler);
-            _subscriptionsCorrelationId[typeof(TMessage).Name] = handlers;
+			_subscriptionsCorrelationId[correlationId] = handlers;
         }
 
 
