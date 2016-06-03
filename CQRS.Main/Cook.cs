@@ -35,7 +35,7 @@ namespace CQRS.Main
 
             Thread.Sleep(new Random().Next(0, 1000));
 
-            _publisher.PublishByType(new FoodCooked(Guid.NewGuid(), message.CorrelationId, message.Id, order));
+            _publisher.PublishByType(new FoodCooked(Guid.NewGuid().ToString(), message.CorrelationId, message.Id, order));
         }
     }
 }

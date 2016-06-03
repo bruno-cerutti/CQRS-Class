@@ -4,7 +4,7 @@ namespace CQRS.Main
 {
 	public interface Message
 	{
-		Guid Id{ get;}
+		string Id{ get;}
 	}
 }
 

@@ -77,7 +77,8 @@ namespace Restaurant.Console
             //Parallel.For(1, 10, (i) => waiter.PlaceOrder(10, items.ToList()));
             for (int i = 0; i < 100; i++)
             {
-                waiter.PlaceOrder(10, items.ToList());
+                var orderId = waiter.PlaceOrder(10, items.ToList());
+                bus.SubscribeByCorrelationId(orderId, new Monitor());
             }
 
         }

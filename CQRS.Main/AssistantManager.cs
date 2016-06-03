@@ -35,7 +35,7 @@ namespace CQRS.Main
             order.Tax = tax;
             order.Total = total;
 
-            _bus.PublishByType(new OrderPriced(Guid.NewGuid(), message.CorrelationId, message.Id, order));
+            _bus.PublishByType(new OrderPriced(Guid.NewGuid().ToString(), message.CorrelationId, message.Id, order));
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CQRS.Main
     {
         public Order Order { get; private set; }
 
-        public CookFood(Guid id, Guid correlationId, Guid causeId, Order order) : base(id, correlationId, causeId)
+        public CookFood(string id, string correlationId, string causeId, Order order) : base(id, correlationId, causeId)
         {
             Order = order;
         }

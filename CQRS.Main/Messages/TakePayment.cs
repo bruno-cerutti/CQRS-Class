@@ -6,7 +6,7 @@ namespace CQRS.Main
     {
         public Order Order { get; private set; }
 
-        public TakePayment(Guid id, Guid correlationId, Guid causeId, Order order) : base(id, correlationId, causeId)
+        public TakePayment(string id, string correlationId, string causeId, Order order) : base(id, correlationId, causeId)
         {
             Order = order;
         }

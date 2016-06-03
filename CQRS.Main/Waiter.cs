@@ -12,16 +12,16 @@ namespace CQRS.Main
 			_bus = bus;
         }
 
-        public int PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
+        public string PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
         {
             var order = new Order(new Random().Next());
             foreach (var lineItem in lineItems)
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);
             }
-            _bus.PublishByType(new OrderPlaced(Guid.NewGuid(), Guid.NewGuid(), Guid.Empty, order));
+            _bus.PublishByType(new OrderPlaced(Guid.NewGuid().ToString(), order.Id.ToString(), string.Empty, order));
 
-            return order.Id;
+            return order.Id.ToString();
         }
     }
 }

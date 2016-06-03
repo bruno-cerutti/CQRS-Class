@@ -17,7 +17,7 @@ namespace CQRS.Main
             var order = message.Order;
             order.Paid = true;
 
-            _publisher.PublishByType(new OrderPaid(Guid.NewGuid(), message.CorrelationId, message.Id, order));
+            _publisher.PublishByType(new OrderPaid(Guid.NewGuid().ToString(), message.CorrelationId, message.Id, order));
         }
     }
 }
