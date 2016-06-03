@@ -8,12 +8,12 @@ namespace Restaurant.Console
     class Program
     {
         private static Timer _theTimer;
-        private static QueueHandler<OrderPriced> _cashierQueue;
-        private static QueueHandler<FoodCooked> _assistantQueue;
-        private static QueueHandler<OrderPlaced> _concurrentQueue;
-        private static QueueHandler<OrderPlaced> _concurrentQueue2;
-        private static QueueHandler<OrderPlaced> _concurrentQueue3;
-        private static QueueHandler<OrderPlaced> _kitchenQueue;
+        private static QueueHandler<TakePayment> _cashierQueue;
+        private static QueueHandler<PriceOrder> _assistantQueue;
+        private static QueueHandler<CookFood> _concurrentQueue;
+        private static QueueHandler<CookFood> _concurrentQueue2;
+        private static QueueHandler<CookFood> _concurrentQueue3;
+        private static QueueHandler<CookFood> _kitchenQueue;
 
         static void Main(string[] args)
         {
@@ -32,11 +32,11 @@ namespace Restaurant.Console
 
 			var cashier = new Cashier(bus);
 			bus.SubscribeByType (cashier);
-			_cashierQueue = new QueueHandler<OrderPriced>(cashier, "Cashier");
+			_cashierQueue = new QueueHandler<TakePayment>(cashier, "Cashier");
 
 
 			var assistant = new AssistantManager(bus);		
-			_assistantQueue = new QueueHandler<FoodCooked>(assistant, "Assistant");
+			_assistantQueue = new QueueHandler<PriceOrder>(assistant, "Assistant");
 			bus.SubscribeByType (assistant);
 
 			var cook = new Cook(bus) {Name = "John"};
@@ -44,18 +44,18 @@ namespace Restaurant.Console
 			var cook3 = new Cook(bus) { Name = "Jack" };
 
             //var multiplexer = new Multiplexer(new []{cook, cook, cook});
-			_concurrentQueue = new QueueHandler<OrderPlaced>(cook, cook.Name);
-			_concurrentQueue2 = new QueueHandler<OrderPlaced>(cook2, cook2.Name);
-			_concurrentQueue3 = new QueueHandler<OrderPlaced>(cook3, cook3.Name);
+			_concurrentQueue = new QueueHandler<CookFood>(cook, cook.Name);
+			_concurrentQueue2 = new QueueHandler<CookFood>(cook2, cook2.Name);
+			_concurrentQueue3 = new QueueHandler<CookFood>(cook3, cook3.Name);
 
 
 
             //var dispatcher = new RRDispatcher(new[] { concurrentQueue, concurrentQueue2, concurrentQueue3 });
-            var mfDispatcher = new MFDispatcher<OrderPlaced>(new[] { _concurrentQueue, _concurrentQueue2, _concurrentQueue3 });
+            var mfDispatcher = new MFDispatcher<CookFood>(new[] { _concurrentQueue, _concurrentQueue2, _concurrentQueue3 });
 
 
 
-			_kitchenQueue = new QueueHandler<OrderPlaced>(mfDispatcher, "Waiter");
+			_kitchenQueue = new QueueHandler<CookFood>(mfDispatcher, "Waiter");
 			bus.SubscribeByType(_kitchenQueue);
 
 			var waiter = new Waiter(bus);

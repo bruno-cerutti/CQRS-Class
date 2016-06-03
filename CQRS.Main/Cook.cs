@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace CQRS.Main
 {
-	public class Cook : IHandle<OrderPlaced>
+	public class Cook : IHandle<CookFood>
     {       
 
         private readonly Dictionary<string, string> _cookBook = new Dictionary<string, string>
@@ -38,5 +38,9 @@ namespace CQRS.Main
         }
 
         public string Name { get; set; }
+	    public void Handle(CookFood message)
+	    {
+	        throw new NotImplementedException();
+	    }
     }
 }

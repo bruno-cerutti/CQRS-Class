@@ -18,18 +18,25 @@ namespace CQRS.Main
 
 		public void SubscribeByType<T> (IHandle<T> handler) where T : AMessage
 		{
-			_subscriptions [typeof(T).Name].Add(handler);
+		    IList<dynamic> handlers;
+            if(!_subscriptions.TryGetValue(typeof(T).Name, out handlers))
+                handlers = new List<dynamic>();
+
+            handlers.Add(handler);
 		}
 
 
 	    public void Publish<TMessage>(TMessage message) where TMessage : AMessage
 	    {
-	        var handlers = _subscriptions[typeof(TMessage).Name];
-	        foreach (var handler in handlers)
+	        IList<dynamic> handlers;
+	        if (_subscriptions.TryGetValue(typeof(TMessage).Name, out handlers))
 	        {
-                handler.Handle(message);
-            }
-        }
+	            foreach (var handler in handlers)
+	            {
+	                handler.Handle(message);
+	            }
+	        }
+	    }
 
 	    public void UnsubscribeByType<TMessage>(TMessage message)
 	    {

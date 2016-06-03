@@ -2,7 +2,7 @@
 
 namespace CQRS.Main
 {
-	public class Cashier : IHandle<OrderPriced>
+	public class Cashier : IHandle<TakePayment>
     {
 		IPublisher _publisher;
 
@@ -19,5 +19,10 @@ namespace CQRS.Main
 
 			_publisher.Publish (new OrderPaid(Guid.NewGuid(), order));
         }
+
+	    public void Handle(TakePayment message)
+	    {
+	        throw new NotImplementedException();
+	    }
     }
 }

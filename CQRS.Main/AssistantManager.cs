@@ -5,10 +5,9 @@ using System;
 
 namespace CQRS.Main
 {
-	public class AssistantManager : IHandle<FoodCooked>
+	public class AssistantManager : IHandle<PriceOrder>
     {
-        
-		private IPublisher _bus;
+		private readonly IPublisher _bus;
 
         private readonly Dictionary<string, decimal> _priceList = new Dictionary<string, decimal>
         {
@@ -39,5 +38,10 @@ namespace CQRS.Main
 
 			_bus.Publish (new OrderPriced(Guid.NewGuid(), order));
         }
+
+	    public void Handle(PriceOrder message)
+	    {
+	        throw new NotImplementedException();
+	    }
     }
 }

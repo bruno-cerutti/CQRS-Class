@@ -52,6 +52,9 @@
     <Compile Include="IStartable.cs" />
     <Compile Include="IStats.cs" />
     <Compile Include="LineItem.cs" />
+    <Compile Include="Messages\CookFood.cs" />
+    <Compile Include="Messages\PriceOrder.cs" />
+    <Compile Include="Messages\TakePayment.cs" />
     <Compile Include="MFDispatcher.cs" />
     <Compile Include="Multiplexer.cs" />
     <Compile Include="Order.cs" />
@@ -81,7 +84,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Folder Include="Messages\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
