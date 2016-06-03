@@ -19,7 +19,7 @@ namespace CQRS.Main
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);
             }
-            _bus.PublishByType(new OrderPlaced(Guid.NewGuid().ToString(), order.Id.ToString(), string.Empty, order));
+            _bus.PublishByType(new OrderPlaced(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), string.Empty, order));
 
             return order.Id.ToString();
         }
