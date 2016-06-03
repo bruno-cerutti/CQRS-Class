@@ -14,6 +14,11 @@ namespace CQRS.Main
 
         }
 
+		public bool DodgyCustomer {			
+			get { return _jsonOrder ["dodgy"].Value<bool> (); }
+			set { _jsonOrder ["dodgy"] = value; }
+		}
+
         public Order(int id)
         {
             Id = id;
@@ -80,7 +85,7 @@ namespace CQRS.Main
         public string CookName
         {
             get { return _jsonOrder["cookName"].Value<string>(); }
-            set { _jsonOrder["cookName"] = value; }
+			set { _jsonOrder["cookName"] = value; }
         }
     }
 

@@ -15,6 +15,7 @@ namespace CQRS.Main
         public string PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
         {
             var order = new Order(new Random().Next());
+			order.DodgyCustomer = true;
             foreach (var lineItem in lineItems)
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);

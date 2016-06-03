@@ -75,6 +75,9 @@
     <Compile Include="Messages\OrderPaid.cs" />
     <Compile Include="MidgetHouse.cs" />
     <Compile Include="Midget.cs" />
+    <Compile Include="DodgyMidget.cs" />
+    <Compile Include="MidgetFactory.cs" />
+    <Compile Include="IMidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

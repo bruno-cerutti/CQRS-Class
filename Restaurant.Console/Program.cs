@@ -55,12 +55,14 @@ namespace Restaurant.Console
 
 
 
-			_kitchenQueue = new QueueHandler<CookFood>(mfDispatcher, "Waiter");
+			_kitchenQueue = new QueueHandler<CookFood>(mfDispatcher, "Kitchen");
 			bus.SubscribeByType(_kitchenQueue);
 
 			var waiter = new Waiter(bus);
 
-            var house = new MidgetHouse(bus);
+			var factory = new MidgetFactory (bus);
+
+			var house = new MidgetHouse(bus, factory);
             bus.SubscribeByType(house);
 
             _concurrentQueue.Start();
@@ -81,9 +83,7 @@ namespace Restaurant.Console
             //Parallel.For(1, 10, (i) => waiter.PlaceOrder(10, items.ToList()));
             for (int i = 0; i < 100; i++)
             {
-                var orderId = waiter.PlaceOrder(10, items.ToList());
-                //bus.SubscribeByCorrelationId(orderId, new Monitor());
-
+                waiter.PlaceOrder(10, items.ToList());
             }
 
         }
