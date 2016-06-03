@@ -74,11 +74,14 @@ namespace Restaurant.Console
                 new Tuple<int, string>(1, "ice cream"),
             };
 
+			var house = new MidgetHouse (bus);
+			bus.SubscribeByType (house);
             //Parallel.For(1, 10, (i) => waiter.PlaceOrder(10, items.ToList()));
             for (int i = 0; i < 100; i++)
             {
                 var orderId = waiter.PlaceOrder(10, items.ToList());
                 bus.SubscribeByCorrelationId(orderId, new Monitor());
+
             }
 
         }
