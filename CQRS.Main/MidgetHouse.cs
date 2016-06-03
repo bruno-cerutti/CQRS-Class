@@ -23,9 +23,6 @@ namespace CQRS.Main
 
 			midget.ProcessTerminated += (sender, s) => _bus.UnsubscribeByCorrelationId(s);
 			_bus.SubscribeByCorrelationId<OrderPlaced>(message.CorrelationId, midget);
-			midget.ProcessTerminated += (sender, s) => _bus.UnsubscribeByCorrelationId(s);
-			_bus.SubscribeByCorrelationId<OrderPlaced>(message.CorrelationId, midget);
-
 		}
 		#endregion
 		

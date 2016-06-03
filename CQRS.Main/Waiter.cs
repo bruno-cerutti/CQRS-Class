@@ -14,8 +14,9 @@ namespace CQRS.Main
 
         public string PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
         {
+            ++_counter;
             var order = new Order(new Random().Next());
-			order.DodgyCustomer = true;
+            order.DodgyCustomer = _counter % 2 == 0;
             foreach (var lineItem in lineItems)
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);
@@ -24,5 +25,7 @@ namespace CQRS.Main
 
             return order.Id.ToString();
         }
+
+        private int _counter = 0;
     }
 }
