@@ -47,14 +47,10 @@ namespace Restaurant.Console
 			_concurrentQueue = new QueueHandler<CookFood>(cook, cook.Name);
 			_concurrentQueue2 = new QueueHandler<CookFood>(cook2, cook2.Name);
 			_concurrentQueue3 = new QueueHandler<CookFood>(cook3, cook3.Name);
-
-
             
             //var dispatcher = new RRDispatcher(new[] { concurrentQueue, concurrentQueue2, concurrentQueue3 });
             var mfDispatcher = new MFDispatcher<CookFood>(new[] { _concurrentQueue, _concurrentQueue2, _concurrentQueue3 });
-
-
-
+            
 			_kitchenQueue = new QueueHandler<CookFood>(mfDispatcher, "Kitchen");
 			bus.SubscribeByType(_kitchenQueue);
 
@@ -80,8 +76,7 @@ namespace Restaurant.Console
                 new Tuple<int, string>(1, "ice cream"),
             };
 
-            //Parallel.For(1, 10, (i) => waiter.PlaceOrder(10, items.ToList()));
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder(10, items.ToList());
             }
