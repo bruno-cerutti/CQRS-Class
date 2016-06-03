@@ -4,6 +4,8 @@ namespace CQRS.Main
 {
 	public class TopicBasedPubSub : IPublisher
 	{
+
+
 		private readonly Dictionary<string, IList<dynamic>> _subscriptions;
 		private readonly Dictionary<string, IList<dynamic>> _subscriptionsCorrelationId;
 
@@ -65,6 +67,11 @@ namespace CQRS.Main
                 _subscriptions.Remove(typeof(TMessage).Name);
             }
         }
+
+		public void UnsubscribeByCorrelationId (string correlationId)
+		{
+			_subscriptionsCorrelationId.Remove (correlationId);
+		}
 
 		#endregion
 

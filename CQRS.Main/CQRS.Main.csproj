@@ -73,6 +73,8 @@
     <Compile Include="Messages\FoodCooked.cs" />
     <Compile Include="Messages\OrderPriced.cs" />
     <Compile Include="Messages\OrderPaid.cs" />
+    <Compile Include="MidgetHouse.cs" />
+    <Compile Include="Midget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
