@@ -9,7 +9,7 @@ namespace CQRS.Main
 			private set;
 		}
 
-		public OrderPriced (Guid id, Order order) : base(id)
+		public OrderPriced (Guid id, Guid correlationId, Guid causeId, Order order) : base(id, correlationId, causeId)
 		{
 			Order = order;
 		}

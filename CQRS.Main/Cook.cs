@@ -14,7 +14,7 @@ namespace CQRS.Main
             {"pasta", "flour, ragu"}
         };
 
-		private IPublisher _publisher;
+		private readonly IPublisher _publisher;
 
 		public Cook(IPublisher publisher)
         {
@@ -22,9 +22,10 @@ namespace CQRS.Main
             
         }
 
-		public void Handle(OrderPlaced orderPlaced)
-        {
-			var order = orderPlaced.Order;
+        public string Name { get; set; }
+	    public void Handle(CookFood message)
+	    {
+            var order = message.Order;
             order.CookName = Name;
             order.Ingredients = string.Empty;
             foreach (var lineItem in order.LineItems)
@@ -32,15 +33,9 @@ namespace CQRS.Main
                 order.Ingredients += _cookBook[lineItem.Item];
             }
 
-            Thread.Sleep(new Random().Next(0,1000));
+            Thread.Sleep(new Random().Next(0, 1000));
 
-			_publisher.Publish (new FoodCooked(Guid.NewGuid(), order));
+            _publisher.PublishByType(new FoodCooked(Guid.NewGuid(), message.CorrelationId, message.Id, order));
         }
-
-        public string Name { get; set; }
-	    public void Handle(CookFood message)
-	    {
-	        throw new NotImplementedException();
-	    }
     }
 }

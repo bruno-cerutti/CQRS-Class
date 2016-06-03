@@ -4,7 +4,7 @@ namespace CQRS.Main
 {
 	public class Cashier : IHandle<TakePayment>
     {
-		IPublisher _publisher;
+	    private readonly IPublisher _publisher;
 
 		public Cashier(IPublisher publisher)
         {
@@ -12,17 +12,12 @@ namespace CQRS.Main
             
         }
 
-		public void Handle(OrderPriced message)
-        {
-			var order = message.Order;
-            order.Paid = true;
-
-			_publisher.Publish (new OrderPaid(Guid.NewGuid(), order));
-        }
-
 	    public void Handle(TakePayment message)
 	    {
-	        throw new NotImplementedException();
-	    }
+            var order = message.Order;
+            order.Paid = true;
+
+            _publisher.PublishByType(new OrderPaid(Guid.NewGuid(), message.CorrelationId, message.Id, order));
+        }
     }
 }

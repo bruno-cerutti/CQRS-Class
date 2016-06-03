@@ -6,12 +6,15 @@ namespace CQRS.Main
 	public class TopicBasedPubSub : IPublisher
 	{
 		private readonly Dictionary<string, IList<dynamic>> _subscriptions;
+		private readonly Dictionary<Guid, IList<dynamic>> _subscriptionsCorrelationId;
+
 	    private static object _lock = new object();
 
 		public TopicBasedPubSub ()
 		{
 			_subscriptions = new Dictionary<string, IList<dynamic>> ();
-		}
+            _subscriptionsCorrelationId = new Dictionary<Guid, IList<dynamic>>();
+        }
 
 		#region IBUS implementation
 
@@ -26,7 +29,7 @@ namespace CQRS.Main
 		}
 
 
-	    public void Publish<TMessage>(TMessage message) where TMessage : AMessage
+	    public void PublishByType<TMessage>(TMessage message) where TMessage : AMessage
 	    {
 	        IList<dynamic> handlers;
 	        if (_subscriptions.TryGetValue(typeof(TMessage).Name, out handlers))
@@ -36,7 +39,16 @@ namespace CQRS.Main
 	                handler.Handle(message);
 	            }
 	        }
-	    }
+
+            IList<dynamic> handlersCorrelationId;
+            if (_subscriptionsCorrelationId.TryGetValue(message.CorrelationId, out handlersCorrelationId))
+            {
+                foreach (var handler in handlersCorrelationId)
+                {
+                    handler.Handle(message);
+                }
+            }
+        }
 
 	    public void UnsubscribeByType<TMessage>(TMessage message)
 	    {

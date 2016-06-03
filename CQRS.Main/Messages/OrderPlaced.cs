@@ -6,7 +6,7 @@ namespace CQRS.Main
 	{
 		public Order Order { get; private set;}
 
-		public OrderPlaced (Guid id, Order order) : base(id)
+		public OrderPlaced (Guid id, Guid correlationId, Guid causeId, Order order) : base(id, correlationId, causeId)
 		{
 			Order = order;
 		}

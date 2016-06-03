@@ -4,14 +4,19 @@ namespace CQRS.Main
 {
 	public abstract class AMessage : Message
 	{
-		public Guid Id {
+	    public Guid Id {
 			get;
 			private set;
 		}
-		
-		public AMessage (Guid id)
+
+        public Guid CorrelationId { get; private set; }
+        public Guid CauseId { get; private set; }
+
+	    protected AMessage (Guid id, Guid correlationId, Guid causeId)
 		{
-			Id = id;
+            CauseId = causeId;
+		    Id = id;
+		    CorrelationId = correlationId;
 		}
 	}
 }

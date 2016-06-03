@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System;
 
 namespace CQRS.Main
@@ -21,9 +20,9 @@ namespace CQRS.Main
 			_bus = bus;
         }
 
-		public void Handle(FoodCooked message)
-        {
-			var order = message.Order;
+	    public void Handle(PriceOrder message)
+	    {
+            var order = message.Order;
             foreach (var lineItem in order.LineItems)
             {
                 lineItem.Price = _priceList[lineItem.Item];
@@ -31,17 +30,12 @@ namespace CQRS.Main
 
             var total = order.LineItems.Sum(item => _priceList[item.Item] * item.Quantity);
 
-            var tax = total*0.12m;
+            var tax = total * 0.12m;
 
             order.Tax = tax;
             order.Total = total;
 
-			_bus.Publish (new OrderPriced(Guid.NewGuid(), order));
+            _bus.PublishByType(new OrderPriced(Guid.NewGuid(), message.CorrelationId, message.Id, order));
         }
-
-	    public void Handle(PriceOrder message)
-	    {
-	        throw new NotImplementedException();
-	    }
     }
 }
