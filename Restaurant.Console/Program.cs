@@ -78,7 +78,8 @@ namespace Restaurant.Console
 
             for (var i = 0; i < 100; i++)
             {
-                waiter.PlaceOrder(10, items.ToList());
+                var id = waiter.PlaceOrder(10, items.ToList());
+                bus.SubscribeByCorrelationId(id, new Monitor());
             }
 
         }

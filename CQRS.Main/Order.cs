@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace CQRS.Main
 {
     public class Order
     {
-        public int Id { get; }
+        public Guid Id { get; }
         private readonly JObject _jsonOrder;
 
         public Order(string orderJson)
@@ -19,7 +20,7 @@ namespace CQRS.Main
 			set { _jsonOrder ["dodgy"] = value; }
 		}
 
-        public Order(int id)
+        public Order(Guid id)
         {
             Id = id;
             _jsonOrder = new JObject {{"id", Id}};

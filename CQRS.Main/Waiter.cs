@@ -15,13 +15,13 @@ namespace CQRS.Main
         public string PlaceOrder(int tableNumber, List<Tuple<int, string>> lineItems)
         {
             ++_counter;
-            var order = new Order(new Random().Next());
+            var order = new Order(Guid.NewGuid());
             order.DodgyCustomer = _counter % 2 == 0;
             foreach (var lineItem in lineItems)
             {
                 order.AddItem(lineItem.Item1, lineItem.Item2);
             }
-            _bus.PublishByType(new OrderPlaced(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), string.Empty, order));
+            _bus.PublishByType(new OrderPlaced(Guid.NewGuid().ToString(), order.Id.ToString(), string.Empty, order));
 
             return order.Id.ToString();
         }
