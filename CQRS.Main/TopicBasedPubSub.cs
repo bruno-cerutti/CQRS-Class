@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CQRS.Main
@@ -57,7 +58,9 @@ namespace CQRS.Main
             {
                 foreach (var handler in handlersCorrelationId)
                 {
-                    handler.Handle(message);
+                    var conversionType = message.GetType();
+                    var msg = Convert.ChangeType(message, conversionType);
+                    handler.Handle(msg);
                 }
             }
         }
