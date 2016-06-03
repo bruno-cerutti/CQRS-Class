@@ -1,14 +1,14 @@
 ﻿using System;
+using CQRS.Main.Messages;
 
 namespace CQRS.Main
 {
 	public class DodgyMidget : IMidget
 	{
-
-		public event ProcessTerminatedEvent ProcessTerminated;
-
-
-		IPublisher _bus;
+        public event ProcessTerminatedEvent ProcessTerminated;
+        
+	    private readonly IPublisher _bus;
+	    private bool _alreadyCooked;
 		public DodgyMidget (IPublisher bus)
 		{
 			_bus = bus;
@@ -24,12 +24,17 @@ namespace CQRS.Main
 
 		public void Handle (FoodCooked message)
 		{
-			ProcessTerminated (this, message.CorrelationId);
+		    _alreadyCooked = true;
+            _bus.PublishByType(new PrintOrder(Guid.NewGuid().ToString(),
+                message.CorrelationId,
+                message.Id,
+                message.Order));
+            Console.WriteLine("Process terminated!");
+		    ProcessTerminated?.Invoke (this, message.CorrelationId);
 		}
 
 		public void Handle (OrderPriced message)
 		{
-			Console.WriteLine("Order priced!");
 			_bus.PublishByType(new TakePayment(Guid.NewGuid().ToString(),
 				message.CorrelationId,
 				message.Id,
@@ -42,13 +47,24 @@ namespace CQRS.Main
 				message.CorrelationId,
 				message.Id,
 				message.Order));
-		}
+            _bus.PublishByType(new SendToMeIn5(Guid.NewGuid().ToString(),
+                message.CorrelationId,
+                message.Id,
+                new RetryCooking(Guid.NewGuid().ToString(), message.CorrelationId, message.Id, message.Order)));
+        }
 
 		public void Handle(Message message){
 		}
 
 
-
+	    public void Handle(RetryCooking message)
+	    {
+            Console.WriteLine("Retry cooking");
+            _bus.PublishByType(new CookFood(Guid.NewGuid().ToString(),
+                message.CorrelationId,
+                message.Id,
+                message.Order));
+        }
 	}
 }
 

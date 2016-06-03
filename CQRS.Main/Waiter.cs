@@ -26,6 +26,6 @@ namespace CQRS.Main
             return order.Id.ToString();
         }
 
-        private int _counter = 0;
+        private int _counter;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using CQRS.Main.Messages;
 
 namespace CQRS.Main
 {
@@ -15,10 +16,15 @@ namespace CQRS.Main
 				message.CorrelationId,
 				message.Id,
 				message.Order));
+		    _bus.PublishByType(new SendToMeIn5(Guid.NewGuid().ToString(),
+		        message.CorrelationId,
+		        message.Id,
+		        new RetryCooking(Guid.NewGuid().ToString(), message.CorrelationId, message.Id, message.Order)));
 		}
 
 		public void Handle (FoodCooked message)
 		{
+		    _alredyCooked = true;
 			_bus.PublishByType (new PriceOrder(Guid.NewGuid ().ToString (),
 							 message.CorrelationId,
 						     message.Id,
@@ -36,20 +42,39 @@ namespace CQRS.Main
 
 		public void Handle (OrderPaid message)
 		{
+            _bus.PublishByType(new PrintOrder(Guid.NewGuid().ToString(),
+                message.CorrelationId,
+                message.Id,
+                message.Order));
 			Console.WriteLine ("Process terminated!");
-			ProcessTerminated(this, message.CorrelationId);
-		}
+            ProcessTerminated?.Invoke(this, message.CorrelationId);
+        }
 
-		public void Handle(Message message){
+        public void Handle(RetryCooking message)
+        {
+            if (!_alredyCooked)
+            {
+                Console.WriteLine("Retry cooking");
+                _bus.PublishByType(new CookFood(Guid.NewGuid().ToString(),
+                    message.CorrelationId,
+                    message.Id,
+                    message.Order));
+            }
+        }
+
+        public void Handle(Message message){
 		}
 
 		#endregion
 
 		IPublisher _bus;
-		public Midget (IPublisher bus)
+	    private bool _alredyCooked;
+
+	    public Midget (IPublisher bus)
 		{
 			_bus = bus;
 		}
+
 	}
 }
 

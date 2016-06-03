@@ -27,6 +27,9 @@ namespace Restaurant.Console
 
 			var bus = new TopicBasedPubSub ();
 
+            var alarmClock = new AlarmClock(bus);
+            bus.SubscribeByType(alarmClock);
+
 			var printer = new Printer();
 			bus.SubscribeByType (printer);
 
@@ -50,15 +53,16 @@ namespace Restaurant.Console
             
             //var dispatcher = new RRDispatcher(new[] { concurrentQueue, concurrentQueue2, concurrentQueue3 });
             var mfDispatcher = new MFDispatcher<CookFood>(new[] { _concurrentQueue, _concurrentQueue2, _concurrentQueue3 });
-            
-			_kitchenQueue = new QueueHandler<CookFood>(mfDispatcher, "Kitchen");
+
+            var droppingHandler = new DroppingHandler<CookFood>(mfDispatcher);
+
+			_kitchenQueue = new QueueHandler<CookFood>(droppingHandler, "Kitchen");
 			bus.SubscribeByType(_kitchenQueue);
 
 			var waiter = new Waiter(bus);
 
 			var factory = new MidgetFactory (bus);
-
-			var house = new MidgetHouse(bus, factory);
+            var house = new MidgetHouse(bus, factory);
             bus.SubscribeByType(house);
 
             _concurrentQueue.Start();
@@ -68,7 +72,7 @@ namespace Restaurant.Console
             _kitchenQueue.Start();
             _cashierQueue.Start();
 
-            _theTimer.Start();
+            //_theTimer.Start();
 
             var items = new[]
             {
@@ -76,10 +80,10 @@ namespace Restaurant.Console
                 new Tuple<int, string>(1, "ice cream"),
             };
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1; i++)
             {
                 var id = waiter.PlaceOrder(10, items.ToList());
-                bus.SubscribeByCorrelationId(id, new Monitor());
+                //bus.SubscribeByCorrelationId(id, new Monitor());
             }
 
         }

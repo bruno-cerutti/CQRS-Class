@@ -21,7 +21,7 @@ namespace CQRS.Main
 			//var midget = new Midget (_bus);
 			var midget = _factory.CreateMidget(message.Order);
 
-			midget.ProcessTerminated += (sender, s) => _bus.UnsubscribeByCorrelationId(s);
+			//midget.ProcessTerminated += (sender, s) => _bus.UnsubscribeByCorrelationId(s);
 			_bus.SubscribeByCorrelationId<OrderPlaced>(message.CorrelationId, midget);
 		}
 		#endregion

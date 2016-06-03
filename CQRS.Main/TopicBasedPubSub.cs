@@ -44,7 +44,7 @@ namespace CQRS.Main
         public void PublishByType<TMessage>(TMessage message) where TMessage : AMessage
 	    {
 	        IList<dynamic> handlers;
-	        if (_subscriptions.TryGetValue(typeof(TMessage).Name, out handlers))
+	        if (_subscriptions.TryGetValue(message.GetType().Name, out handlers))
 	        {
 	            foreach (var handler in handlers)
 	            {

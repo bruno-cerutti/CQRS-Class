@@ -46,14 +46,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlarmClock.cs" />
     <Compile Include="AssistantManager.cs" />
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
+    <Compile Include="DroppingHandler.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="IStats.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="Messages\CookFood.cs" />
     <Compile Include="Messages\PriceOrder.cs" />
+    <Compile Include="Messages\PrintOrder.cs" />
+    <Compile Include="Messages\RetryCooking.cs" />
+    <Compile Include="Messages\SendToMeIn5.cs" />
     <Compile Include="Messages\TakePayment.cs" />
     <Compile Include="MFDispatcher.cs" />
     <Compile Include="Monitor.cs" />
